@@ -3,8 +3,6 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { read } from 'fs';
-import { generateKey } from 'crypto';
 
 export const MainContainer = () => {
     const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
