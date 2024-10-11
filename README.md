@@ -3,9 +3,9 @@
 
 This project is a Next.js application that allows users to upload images, which are then analyzed using Google Generative AI (Gemini model). The app identifies the uploaded image and provides a detailed description in Turkish, along with related questions and keywords.
 
-<div style="display: flex; justify-content: center;">
-    <img src="public/screenshot.jpeg" alt="App Screenshot" width="600" height="400">
-</div>
+<p align="center">
+  <img src="public/screenshot.jpeg" alt="App Screenshot" width="600" height="400">
+</p>
 
 ## Features
 
