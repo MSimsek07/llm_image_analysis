@@ -41,7 +41,7 @@ This project is a Next.js application that allows users to upload images, which 
 3. **Set Up Environment Variables**:
     Create a `.env.local` file at the root of the project with the following content:
     ```bash
-    NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY=your_openai_api_key
+    NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY=your_google_gemini_api_key
     ```
 
 4. **Run the Application**:
