@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import sharp from 'sharp';
 
 export const MainContainer = () => {
     const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
@@ -10,11 +11,27 @@ export const MainContainer = () => {
     const [result, setresult] = useState<string | null>(null)
     const [loading, setloading] = useState(false);
     const [image, setImage] = useState<File | null>(null);
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0]);
+            const file = e.target.files[0];
+            const compressedImage = await compressAndResizeImage(file);
+            setImage(compressedImage);
         }
     };
+
+    const compressAndResizeImage = async (file: File): Promise<File> => {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const resizedBuffer = await sharp(buffer)
+            .resize(800, 800, { fit: 'inside' })
+            .jpeg({ quality: 80 })
+            .toBuffer();
+
+        return new File([resizedBuffer], file.name, { type: 'image/jpeg' });
+    };
+
     const identifyImage = async (additionalPrompt: string = "") => {
         if (!image) return;
         setloading(true);

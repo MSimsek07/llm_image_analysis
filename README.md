@@ -1,4 +1,3 @@
-
 # LLM Image Analysis App
 
 This project is a Next.js application that allows users to upload images, which are then analyzed using Google Generative AI (Gemini model). The app identifies the uploaded image and provides a detailed description in Turkish, along with related questions and keywords.
@@ -14,6 +13,7 @@ This project is a Next.js application that allows users to upload images, which 
 - **Detailed Insights**: Get image descriptions with important information and context in Turkish.
 - **Related Questions & Keywords**: Automatically generates related questions and keywords based on the image description.
 - **User-Friendly Interface**: Responsive and easy-to-use UI.
+- **Image Compression and Resizing**: Compresses and resizes images before uploading to reduce file size and loading time.
 
 ## Tech Stack
 
