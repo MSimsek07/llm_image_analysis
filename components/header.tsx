@@ -2,9 +2,33 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import ImageAsset from '../public/logo.png'
-
+import { useEffect } from 'react';
 
 export const Header = () => {
+    useEffect(() => {
+        const handleSmoothScroll = (event: Event) => {
+            event.preventDefault();
+            const targetId = (event.currentTarget as HTMLAnchorElement).getAttribute('href')?.substring(1);
+            if (targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        };
+
+        const links = document.querySelectorAll('a[href^="#"]');
+        links.forEach(link => {
+            link.addEventListener('click', handleSmoothScroll);
+        });
+
+        return () => {
+            links.forEach(link => {
+                link.removeEventListener('click', handleSmoothScroll);
+            });
+        };
+    }, []);
+
     return (
         <header className="bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
