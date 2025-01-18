@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
+  throw new Error('Google Gemini API key is not set');
+}
+
 const client = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -19,6 +19,10 @@ export const MainContainer = () => {
         setloading(true);
 
         try {
+            if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
+                throw new Error('Google Gemini API key is not set');
+            }
+
             const formData = new FormData();
             formData.append('image', image);
             formData.append('additionalPrompt', additionalPrompt);
@@ -49,6 +53,10 @@ export const MainContainer = () => {
         setloading(true);
 
         try {
+            if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
+                throw new Error('Google Gemini API key is not set');
+            }
+
             const response = await fetch('/api/generate-keywords', {
                 method: 'POST',
                 headers: {
@@ -78,6 +86,10 @@ export const MainContainer = () => {
 
     const generateRelatedQuestions = async (text: string) => {
         try {
+            if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
+                throw new Error('Google Gemini API key is not set');
+            }
+
             const response = await fetch('/api/generate-related-questions', {
                 method: 'POST',
                 headers: {
