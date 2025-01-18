@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { google } from '@google-cloud/vision';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const client = new google.vision.v1.ImageAnnotatorClient();
+const client = new GoogleGenerativeAI();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
