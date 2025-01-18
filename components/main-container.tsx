@@ -114,7 +114,7 @@ export const MainContainer = () => {
 
         try {
             const result = await model.generateContent([
-                `Based on the following information about an image, generate 5 related questionsin Turkish that someone might ask to learn more about the subject :
+                `Based on the following information about an image, generate 5 related questions in Turkish that someone might ask to learn more about the subject :
     
             ${text}
     
@@ -131,7 +131,7 @@ export const MainContainer = () => {
 
     const askRelatedQuestion = (question: string) => {
         identifyImage(
-            `Answer the following question about the image in Turkish DONT write the questions itself: "${question}"`
+            `Answer the following question about the image in Turkish DONT write the questions itself also you dont need to write about the image from scracth just focus the question: "${question}"`
         );
     };
 
