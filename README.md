@@ -1,4 +1,3 @@
-
 # LLM Image Analysis App
 
 This project is a Next.js application that allows users to upload images, which are then analyzed using Google Generative AI (Gemini model). The app identifies the uploaded image and provides a detailed description in Turkish, along with related questions and keywords.
@@ -96,6 +95,11 @@ llm_image_analysis/
 │   ├── footer.tsx              # Footer component
 │   └── header.tsx              # Header component
 │
+├── pages/                      # API routes
+│   ├── api/identify-image.ts   # API route for image analysis
+│   ├── api/generate-keywords.ts# API route for keyword generation
+│   └── api/generate-related-questions.ts # API route for related questions generation
+│
 ├── .env.local                  # Environment variables (not included in repo)
 ├── package.json                # Project dependencies and scripts
 └── README.md                   # Project documentation
@@ -107,7 +111,6 @@ llm_image_analysis/
 - **Next.js**
 - **Tailwind CSS**
 - **Google Generative AI SDK**
-
 
 ## Contributing
 

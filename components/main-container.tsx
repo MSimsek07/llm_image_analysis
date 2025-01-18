@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const MainContainer = () => {
     const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
@@ -18,110 +17,82 @@ export const MainContainer = () => {
     const identifyImage = async (additionalPrompt: string = "") => {
         if (!image) return;
         setloading(true);
-        const genai = new GoogleGenerativeAI(
-            process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!,
-        );
-        const model = genai.getGenerativeModel({
-            model: "gemini-1.5-flash",
-        });
 
         try {
-            const imageParts = await fileToGenerativePart(image);
-            const result = await model.generateContent([
-                `Identify this image and provide its name and important information
-                including a detailed explanation about that image, your response should be in Turkish ${additionalPrompt}.`,
-                imageParts,
-            ]);
-            const response = result.response;
-            const text = response
-                .text()
-                .trim()
-                .replace(/```/g, "")
-                .replace(/\*\*/g, "")
-                .replace(/\*/g, "")
-                .replace(/-\s*/g, "")
-                .replace(/\n\s*\n/g, "\n");
+            const formData = new FormData();
+            formData.append('image', image);
+            formData.append('additionalPrompt', additionalPrompt);
+
+            const response = await fetch('/api/identify-image', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Image analysis failed');
+            }
+
+            const data = await response.json();
+            const text = data.result;
 
             setresult(text);
             await generateKeywords(text);
             await generateRelatedQuestions(text);
         } catch (error) {
             console.log((error as Error)?.message);
-        }
-        finally {
+        } finally {
             setloading(false);
         }
-
     };
-
-    const fileToGenerativePart = async (file: File): Promise<{ inlineData: { data: string; mimeType: string } }> => {
-
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const base64Data = reader.result as string;
-                const base64Content = base64Data.split(",")[1];
-                resolve({
-                    inlineData: {
-                        data: base64Content,
-                        mimeType: file.type
-                    }
-                })
-            }
-            reader.onerror = (error) => {
-                reject(error);
-            }
-            reader.readAsDataURL(file);
-        });
-    }
 
     const generateKeywords = async (text: string) => {
         setloading(true);
-        const genai = new GoogleGenerativeAI(
-            process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!,
-        );
-        const model = genai.getGenerativeModel({
-            model: "gemini-1.5-flash",
-        });
 
         try {
-            const result = await model.generateContent([
-                `Understand the text and generate important and unique meaningful Turkish keywords from the following text for social media tag: ${text} DO NOT write anything else just words no punctuation or special characters.`,
-            ]);
-            const response = result.response;
-            const keywords = response
-                .text()
-                .trim()
-                .split(/\s+/)
-                .slice(0, 6); // Assuming the response is a space-separated string of keywords
+            const response = await fetch('/api/generate-keywords', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Keyword generation failed');
+            }
+
+            const data = await response.json();
+            const keywords = data.keywords;
 
             setKeywords(keywords);
-
         } catch (error) {
             console.log((error as Error)?.message);
         } finally {
             setloading(false);
         }
     };
+
     const regenerateContent = (keyword: string) => {
         identifyImage(`Focus more on aspects related to "${keyword}".`);
     };
-    const generateRelatedQuestions = async (text: string) => {
-        const genAI = new GoogleGenerativeAI(
-            process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!
-        );
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+    const generateRelatedQuestions = async (text: string) => {
         try {
-            const result = await model.generateContent([
-                `Based on the following information about an image, generate 5 related questions in Turkish that someone might ask to learn more about the subject :
-    
-            ${text}
-    
-            Format the output as a simple list of questions, one per line.`,
-            ]);
-            const response = await result.response;
-            const questions = response.text().trim().split("\n");
+            const response = await fetch('/api/generate-related-questions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Related questions generation failed');
+            }
+
+            const data = await response.json();
+            const questions = data.questions;
+
             setRelatedQuestions(questions);
         } catch (error) {
             console.error("Error generating related questions:", error);
