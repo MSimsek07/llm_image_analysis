@@ -131,7 +131,7 @@ export const MainContainer = () => {
 
     const askRelatedQuestion = (question: string) => {
         identifyImage(
-            `Answer the following question about the image in Turkish DONT write the questions itself also you dont need to write about the image from scracth just focus the question: "${question}"`
+            `Answer the following question about the image in Turkish DONT write the questions itself, also you dont need to write about the image from scracth just focus the question and ONLY write the answer: "${question}"`
         );
     };
 
