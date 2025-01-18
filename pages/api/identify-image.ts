@@ -9,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { image, additionalPrompt } = req.body;
 
     if (!image) {
