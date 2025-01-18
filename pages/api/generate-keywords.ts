@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    const [result] = await genai.labelDetection(text);
-    const keywords = result.labelAnnotations.map(annotation => annotation.description);
+    const [result] = await genai.documentTextDetection(text);
+    const keywords = result.textAnnotations.map(annotation => annotation.description);
 
     res.status(200).json({ keywords });
   } catch (error) {
