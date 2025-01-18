@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const client = new GoogleGenerativeAI();
+const client = new GoogleGenerativeAI({
+  apiKey: process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY,
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
