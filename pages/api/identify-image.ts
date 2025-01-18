@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
+  throw new Error('Google Gemini API key is not set');
+}
+
 const genai = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!);
 
 const fileToGenerativePart = async (file: File): Promise<{ inlineData: { data: string; mimeType: string } }> => {
@@ -57,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json({ result: text });
   } catch (error) {
-    console.error('Error analyzing image:', error);
-    res.status(500).json({ error: 'Image analysis failed' });
+    console.error('Error analyzing image:', error.message);
+    res.status(500).json({ error: `Image analysis failed: ${error.message}` });
   }
 }
