@@ -25,7 +25,13 @@ export const MainContainer = () => {
 
             const response = await fetch('/api/identify-image', {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify({
+                    image: await fileToBase64(image),
+                    additionalPrompt: additionalPrompt
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
             if (!response.ok) {
@@ -104,6 +110,17 @@ export const MainContainer = () => {
         identifyImage(
             `Answer the following question about the image in Turkish DONT write the questions itself, also you dont need to write about the image from scracth just focus the question and ONLY write the answer: "${question}"`
         );
+    };
+
+    const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                resolve(reader.result as string);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     };
 
     return (
