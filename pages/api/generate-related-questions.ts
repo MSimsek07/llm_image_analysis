@@ -15,8 +15,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    const [result] = await genai.documentTextDetection(text);
-    const questions = result.textAnnotations.map(annotation => annotation.description);
+    const model = genai.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const result = await model.generateContent([
+      `Based on the following information about an image, generate 5 related questions in Turkish that someone might ask to learn more about the subject :
+      
+      ${text}
+      
+      Format the output as a simple list of questions, one per line.`,
+    ]);
+
+    const response = await result.response;
+    const questions = response.text().trim().split("\n");
 
     res.status(200).json({ questions });
   } catch (error) {

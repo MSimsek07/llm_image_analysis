@@ -3,25 +3,59 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genai = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!);
 
+const fileToGenerativePart = async (file: File): Promise<{ inlineData: { data: string; mimeType: string } }> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64Data = reader.result as string;
+      const base64Content = base64Data.split(",")[1];
+      resolve({
+        inlineData: {
+          data: base64Content,
+          mimeType: file.type
+        }
+      });
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { image, additionalPrompt } = req.body;
 
     if (!image) {
       return res.status(400).json({ error: 'Image is required' });
     }
 
-    const [result] = await genai.labelDetection(image);
-    const labels = result.labelAnnotations;
+    const model = genai.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
 
-    const description = labels.map(label => label.description).join(', ');
+    const imageParts = await fileToGenerativePart(image);
+    const result = await model.generateContent([
+      `Identify this image and provide its name and important information including a detailed explanation about that image, your response should be in Turkish ${additionalPrompt}.`,
+      imageParts,
+    ]);
 
-    res.status(200).json({ result: description });
+    const response = result.response;
+    const text = response
+      .text()
+      .trim()
+      .replace(/```/g, "")
+      .replace(/\*\*/g, "")
+      .replace(/\*/g, "")
+      .replace(/-\s*/g, "")
+      .replace(/\n\s*\n/g, "\n");
+
+    res.status(200).json({ result: text });
   } catch (error) {
     console.error('Error analyzing image:', error);
     res.status(500).json({ error: 'Image analysis failed' });

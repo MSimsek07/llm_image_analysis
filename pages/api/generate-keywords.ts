@@ -19,8 +19,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    const [result] = await genai.documentTextDetection(text);
-    const keywords = result.textAnnotations.map(annotation => annotation.description);
+    const model = genai.getGenerativeModel({
+      model: "gemini-1.5-flash",
+    });
+
+    const result = await model.generateContent([
+      `Understand the text and generate important and unique meaningful Turkish keywords from the following text for social media tag: ${text} DO NOT write anything else just words no punctuation or special characters.`,
+    ]);
+
+    const response = result.response;
+    const keywords = response
+      .text()
+      .trim()
+      .split(/\s+/)
+      .slice(0, 6); // Assuming the response is a space-separated string of keywords
 
     res.status(200).json({ keywords });
   } catch (error) {
