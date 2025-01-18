@@ -5,7 +5,7 @@ if (!process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY) {
   throw new Error('Google Gemini API key is not set');
 }
 
-const client = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY);
+const genai = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY!);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    const [result] = await client.labelDetection(text);
+    const [result] = await genai.labelDetection(text);
     const keywords = result.labelAnnotations.map(annotation => annotation.description);
 
     res.status(200).json({ keywords });
