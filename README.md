@@ -77,8 +77,31 @@ This project is a Next.js application that allows users to upload images, which 
 
 ### Important Scripts
 
-- `main-container.tsx`: The primary logic for uploading and analyzing the image, along with rendering the UI.
-- Tailwind CSS is used for styling components and providing a responsive layout.
+### Core Components
+
+### Core Components
+
+#### MainContainer.tsx
+- **Main Interface**: Handles user interactions and display
+- **State Management**: Manages image, results, and loading states
+- **Key Functions**:
+    - `handleImageUpload`: Processes file uploads
+    - `identifyImage`: Triggers AI analysis
+    - `regenerateContent`: Handles keyword-based regeneration
+    - `askRelatedQuestion`: Processes follow-up questions
+- **UI Elements**: Includes image upload, results display, and interactive elements
+
+#### ImageActions.ts
+- **Server-Side Processing**: Handles all AI interactions
+- **Core Functions**:
+    - `processImage`: Analyzes images with Gemini AI
+    - `generateKeywords`: Creates relevant Turkish keywords
+    - `generateRelatedQuestions`: Generates follow-up questions
+- **Features**: 
+    - Error handling and logging
+    - Text formatting and cleanup
+    - Integration with Gemini 1.5 Flash model
+
 
 ## Project Structure
 
@@ -86,19 +109,27 @@ This project is a Next.js application that allows users to upload images, which 
 llm_image_analysis/
 │
 ├── public/                     # Public assets (images, logos, etc.)
-├── app/ 
-│   ├── fonts/                  # Fonts used by the app
-│   ├── layout.tsx              # Layout component
-│   └── page.tsx                # Main Next.js page
+├── app/
+│   ├── api/                   # API endpoints
+│   │   └── imageActions.ts    # Image processing actions
+│   ├── fonts/                 # Fonts used by the app
+│   ├── layout.tsx            # Layout component
+│   └── page.tsx              # Main Next.js page
 │
 ├── components/                 # React components
 │   ├── main-container.tsx      # Main image analysis logic
 │   ├── footer.tsx              # Footer component
 │   └── header.tsx              # Header component
 │
-├── .env.local                  # Environment variables (not included in repo)
+├── __tests__/
+│   ├── e2e.spec.ts            # End-to-end tests
+│   ├── imageActions.spec.ts
+│   └── main-container.spec.ts
+├── Dockerfile                  # Docker build configuration
+├── .env.local                  # Environment variables
 ├── package.json                # Project dependencies and scripts
 └── README.md                   # Project documentation
+                  # Project documentation
 ```
 
 ## Dependencies
@@ -107,6 +138,7 @@ llm_image_analysis/
 - **Next.js**
 - **Tailwind CSS**
 - **Google Generative AI SDK**
+- **Playwright (for E2E testing)**
 
 
 ## Contributing
